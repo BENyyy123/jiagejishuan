@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跨境定价 · 双向利润选填 | 人民币/美金</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: #eef2f7;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .container {
+            max-width: 680px;
+            width: 100%;
+            background: white;
+            border-radius: 2.5rem;
+            box-shadow: 0 20px 35px -8px rgba(0,20,45,0.2), 0 0 0 1px rgba(0,0,0,0.02);
+            padding: 2rem 2rem 2.2rem;
+        }
+        .title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.8rem;
+        }
+        .title h1 {
+            font-size: 1.9rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            background: linear-gradient(145deg, #1A2C42, #0F273C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .title .badge {
+            background: #0B2A41;
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 60px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border: 1px solid #356a9c;
+            box-shadow: inset 0 -1px 0 #1d476b;
+        }
+        .sub {
+            color: #45607c;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-left: 0.5rem;
+            border-left: 4px solid #2b6a9e;
+            background: #f4f9ff;
+            padding: 0.7rem 1.2rem;
+            border-radius: 1.5rem;
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .sub span {
+            font-weight: 600;
+            color: #0d3d64;
+        }
+
+        /* 方向切换器 */
+        .direction-switch {
+            background: #e3ecf5;
+            border-radius: 60px;
+            display: inline-flex;
+            padding: 0.4rem;
+            margin-bottom: 1.8rem;
+            border: 1px solid #b8cee9;
+        }
+        .direction-btn {
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            background: transparent;
+            color: #264e73;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .direction-btn.active {
+            background: white;
+            color: #0f3a5c;
+            box-shadow: 0 4px 10px rgba(0,40,70,0.15);
+        }
+        .input-area {
+            background: #f9fcff;
+            border-radius: 2rem;
+            padding: 1.8rem 1.5rem;
+            border: 1px solid #cbd9ec;
+            margin-bottom: 2rem;
+        }
+        .label-row {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #1e3e60;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 0.6rem;
+        }
+        .label-row i {
+            font-style: normal;
+            background: #20639B;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        .currency-wrap {
+            position: relative;
+            margin-bottom: 1.8rem;
+        }
+        .currency-wrap .symbol {
+            position: absolute;
+            left: 1.2rem;
+            top: 1rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #174b75;
+            opacity: 0.8;
+        }
+        .currency-wrap input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            border: 2px solid #cddef5;
+            border-radius: 2rem;
+            outline: none;
+            background: white;
+            color: #0b263b;
+            transition: 0.2s;
+        }
+        .currency-wrap input:focus {
+            border-color: #20639B;
+            box-shadow: 0 0 0 4px rgba(32,99,155,0.2);
+        }
+        .currency-wrap input::placeholder {
+            font-weight: 400;
+            font-size: 1rem;
+            color: #9bb3cf;
+        }
+
+        .profit-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #eaf1fb;
+            border-radius: 3rem;
+            padding: 0.5rem 1.5rem 0.5rem 1rem;
+            margin: 1.5rem 0 1.2rem;
+            flex-wrap: wrap;
+        }
+        .profit-label {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-weight: 600;
+            color: #10345e;
+        }
+        .profit-label i {
+            font-style: normal;
+            background: #2c6191;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        .profit-input-wrap {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 40px;
+            border: 1.5px solid #b4c9e5;
+            overflow: hidden;
+        }
+        .profit-input-wrap input {
+            width: 90px;
+            padding: 0.6rem 0.2rem 0.6rem 1rem;
+            border: none;
+            outline: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #0f3f62;
+            text-align: center;
+        }
+        .profit-input-wrap span {
+            background: #f1f6fd;
+            padding: 0.6rem 1rem 0.6rem 0.5rem;
+            font-weight: 600;
+            color: #2d5880;
+            border-left: 1px solid #cedff2;
+        }
+        .profit-note {
+            font-size: 0.9rem;
+            color: #26648b;
+            margin-left: auto;
+            background: white;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px #c3d6ec;
+        }
+
+        .exchange-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #e6f0fc;
+            padding: 0.8rem 1.2rem;
+            border-radius: 3rem;
+            margin: 1.5rem 0 1.2rem;
+        }
+        .exchange-row .info {
+            font-weight: 500;
+            color: #124072;
+        }
+        .exchange-row .rate-value {
+            background: white;
+            padding: 0.3rem 1.4rem;
+            border-radius: 40px;
+            font-weight: 700;
+            color: #103459;
+            border: 1px solid #a3c2e6;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .exchange-row .rate-value:hover {
+            background: #ecf3fd;
+            border-color: #20639B;
+        }
+        .profit-zone {
+            background: linear-gradient(105deg, #102a3e 0%, #183f5c 100%);
+            border-radius: 2rem;
+            padding: 1.6rem 2rem;
+            color: white;
+            box-shadow: 0 12px 18px -8px #102c3e70;
+            margin: 1.2rem 0 1rem;
+        }
+        .profit-zone .tag {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .profit-zone .target {
+            background: #ffb347;
+            color: #1b3f28;
+            padding: 0.2rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-left: 1rem;
+        }
+        .price-block {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin: 0.8rem 0 1.2rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .price-block .main-price {
+            font-size: 3.2rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+        .price-block .main-price small {
+            font-size: 1.2rem;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+        .price-block .sub-price {
+            font-size: 1.3rem;
+            background: rgba(255,255,255,0.08);
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+        }
+        .detail-row {
+            display: flex;
+            gap: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            padding-top: 1.2rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .detail-item .label {
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+        .detail-item .value {
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+        .reset-area {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        .reset-btn {
+            background: none;
+            border: 1.5px solid #acc5e3;
+            border-radius: 40px;
+            padding: 0.7rem 1.8rem;
+            font-weight: 600;
+            color: #1e456e;
+            cursor: pointer;
+            transition: 0.15s;
+            font-size: 0.9rem;
+        }
+        .reset-btn:hover {
+            background: #dbe7f5;
+            border-color: #20639B;
+        }
+        .footer {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #50799e;
+            text-align: center;
+        }
+        .example-tip {
+            display: inline-flex;
+            background: white;
+            border: 1px dashed #648bb0;
+            border-radius: 30px;
+            padding: 0.4rem 1.2rem;
+            font-size: 0.85rem;
+            color: #1f4d79;
+            cursor: pointer;
+            transition: 0.1s;
+            margin-right: 0.8rem;
+        }
+        .example-tip:hover {
+            background: #e1efff;
+            border-color: #20639B;
+        }
+        #directionHint {
+            font-size: 0.9rem;
+            color: #20639B;
+            font-weight: 500;
+            background: #e3f0fd;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title">
+        <h1>🔄 双向互换 · 利润选填</h1>
+        <div class="badge">人民币 ↔ 美金</div>
+    </div>
+    <div class="sub">
+        <span>📌 选择方向</span> 根据成本币种自动计算目标售价
+    </div>
+
+    <!-- 方向切换按钮 -->
+    <div class="direction-switch" id="directionSwitch">
+        <button class="direction-btn active" id="dirCNYtoUSD">人民币 → 美金</button>
+        <button class="direction-btn" id="dirUSDtoCNY">美金 → 人民币</button>
+    </div>
+
+    <div class="input-area">
+        <!-- 动态标签 + 输入框 (通过js修改) -->
+        <div class="label-row" id="inputLabel">
+            <i>①</i> <span id="inputLabelText">商品成本 (人民币 ¥)</span>
+        </div>
+        <div class="currency-wrap" id="inputWrapper">
+            <span class="symbol" id="inputSymbol">¥</span>
+            <input type="number" id="costInput" step="0.01" min="0" value="128.00" placeholder="例如 128.00">
+        </div>
+
+        <!-- 利润选填行 (不变) -->
+        <div class="profit-row">
+            <div class="profit-label">
+                <i>②</i> 目标利润率
+            </div>
+            <div class="profit-input-wrap">
+                <input type="number" id="profitPercent" step="0.1" min="0" max="100" value="35.0">
+                <span>%</span>
+            </div>
+            <div class="profit-note">
+                选填 · 默认35%
+            </div>
+        </div>
+
+        <!-- 汇率显示/编辑 -->
+        <div class="exchange-row">
+            <span class="info">💱 实时汇率 (双击编辑)</span>
+            <span class="rate-value" id="exchangeRateDisplay">1 USD = 7.25 ¥</span>
+        </div>
+        <input type="hidden" id="exchangeRate" value="7.25">
+
+        <!-- 结果展示区 (动态标题) -->
+        <div class="profit-zone" id="resultBox">
+            <div class="tag">
+                <span id="resultLabel">建议美元售价</span>
+                <span class="target" id="profitTag">35% 利润</span>
+            </div>
+            <div class="price-block">
+                <div class="main-price" id="targetPriceDisplay">$ --.--</div>
+                <div class="sub-price" id="convertedDisplay">≈ ¥--.--</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-item">
+                    <span class="label" id="costDetailLabel">人民币成本</span>
+                    <span class="value" id="costDisplay">¥128.00</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">利润金额</span>
+                    <span class="value" id="profitAmountDisplay">¥44.80</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">利润率</span>
+                    <span class="value" id="marginDisplay">35.0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快捷示例 + 重置 -->
+        <div class="reset-area">
+            <div style="display: flex; gap: 10px;">
+                <div class="example-tip" id="exampleLow">🔄 低成本 59</div>
+                <div class="example-tip" id="exampleHigh">🔄 高成本 399</div>
+            </div>
+            <button class="reset-btn" id="resetBtn">⟲ 重置</button>
+        </div>
+    </div>
+
+    <div class="footer" id="directionHint">
+        ⚡ 当前方向：人民币成本 → 美元售价 (利润按人民币计算)
+    </div>
+</div>
+
+<script>
+    (function() {
+        // 核心变量
+        let direction = 'cny2usd'; // 'cny2usd' 或 'usd2cny'
+        let exchangeRate = 7.25;    // 默认 USD/CNY
+
+        // DOM 元素
+        const dirCnyBtn = document.getElementById('dirCNYtoUSD');
+        const dirUsdBtn = document.getElementById('dirUSDtoCNY');
+        const inputLabelSpan = document.getElementById('inputLabelText');
+        const inputSymbol = document.getElementById('inputSymbol');
+        const costInput = document.getElementById('costInput');
+        const profitInput = document.getElementById('profitPercent');
+        const exchangeRateSpan = document.getElementById('exchangeRateDisplay');
+        const exchangeRateHidden = document.getElementById('exchangeRate');
+        const resultLabel = document.getElementById('resultLabel');
+        const targetPriceDisplay = document.getElementById('targetPriceDisplay');
+        const convertedDisplay = document.getElementById('convertedDisplay');
+        const costDetailLabel = document.getElementById('costDetailLabel');
+        const costDisplay = document.getElementById('costDisplay');
+        const profitAmountSpan = document.getElementById('profitAmountDisplay');
+        const marginSpan = document.getElementById('marginDisplay');
+        const profitTagSpan = document.getElementById('profitTag');
+        const directionHint = document.getElementById('directionHint');
+
+        // 更新所有UI与计算
+        function refreshAll() {
+            // 1. 更新方向相关标签
+            if (direction === 'cny2usd') {
+                inputLabelSpan.innerText = '商品成本 (人民币 ¥)';
+                inputSymbol.innerText = '¥';
+                resultLabel.innerText = '建议美元售价';
+                costDetailLabel.innerText = '人民币成本';
+                directionHint.innerText = '⚡ 当前方向：人民币成本 → 美元售价 (利润按人民币计算)';
+            } else {
+                inputLabelSpan.innerText = '商品成本 (美元 $)';
+                inputSymbol.innerText = '$';
+                resultLabel.innerText = '建议人民币售价';
+                costDetailLabel.innerText = '美元成本';
+                directionHint.innerText = '⚡ 当前方向：美元成本 → 人民币售价 (利润按人民币计算)';
+            }
+
+            // 2. 读取输入值
+            let cost = parseFloat(costInput.value);
+            if (isNaN(cost) || cost < 0) cost = 0;
+
+            let profitPercent = parseFloat(profitInput.value);
+            if (isNaN(profitPercent) || profitPercent < 0) profitPercent = 0;
+            if (profitPercent > 100) profitPercent = 100;
+            profitTagSpan.innerText = profitPercent.toFixed(1) + '% 利润';
+
+            const profitDecimal = profitPercent / 100;
+
+            // 3. 计算 (核心)
+            // 无论方向如何，利润额基于“人民币等价成本”计算，保持利润金额始终显示为人民币
+            // 首先将成本统一为人民币等价
+            let costInCNY = (direction === 'cny2usd') ? cost : cost * exchangeRate;
+
+            // 目标售价计算公式（基于人民币）: targetCNY = costInCNY / (1 - profitDecimal)
+            // 分母不能为0且不能为负，但profitDecimal不会大于1（因为上限100%）
+            let targetCNY;
+            let denominator = 1 - profitDecimal;
+            if (denominator <= 0.00001) { // 避免除以0或负数（profit=100%时分母为0）
+                // 如果利润率为100%，可以特殊处理：理论上售价无穷大，显示提示
+                targetPriceDisplay.innerText = direction === 'cny2usd' ? '$ ∞' : '¥ ∞';
+                convertedDisplay.innerText = '⚠️ 利润100%';
+                profitAmountSpan.innerText = '¥--';
+                marginSpan.innerText = '100.0%';
+                costDisplay.innerText = direction === 'cny2usd' ? `¥${cost.toFixed(2)}` : `$${cost.toFixed(2)}`;
+                return;
+            }
+            targetCNY = costInCNY / denominator;
+            // 利润额 (人民币)
+            const profitCNY = targetCNY - costInCNY;
+            const actualMargin = (targetCNY > 0) ? profitCNY / targetCNY : 0;
+
+            // 根据方向显示不同的目标售价及换算
+            if (direction === 'cny2usd') {
+                // 目标: 美元售价
+                const targetUSD = targetCNY / exchangeRate;
+                targetPriceDisplay.innerText = `$ ${targetUSD.toFixed(2)}`;
+                convertedDisplay.innerText = `≈ ¥${targetCNY.toFixed(2)}`;
+                costDisplay.innerText = `¥${cost.toFixed(2)}`;
+            } else {
+                // 目标: 人民币售价 (targetCNY 直接就是人民币价格)
+                // 同时显示折合美元
+                const equivalentUSD = targetCNY / exchangeRate;
+                targetPriceDisplay.innerText = `¥ ${targetCNY.toFixed(2)}`;
+                convertedDisplay.innerText = `≈ $${equivalentUSD.toFixed(2)}`;
+                costDisplay.innerText = `$${cost.toFixed(2)}`;
+            }
+
+            // 利润额始终显示人民币
+            profitAmountSpan.innerText = `¥${profitCNY.toFixed(2)}`;
+            marginSpan.innerText = (actualMargin * 100).toFixed(1) + '%';
+        }
+
+        // 切换方向
+        function setDirection(newDir) {
+            direction = newDir;
+            if (direction === 'cny2usd') {
+                dirCnyBtn.classList.add('active');
+                dirUsdBtn.classList.remove('active');
+            } else {
+                dirUsdBtn.classList.add('active');
+                dirCnyBtn.classList.remove('active');
+            }
+            // 切换方向时，可以不清空数字，但用户需要知道货币含义变了，保留原数字
+            refreshAll();
+        }
+
+        // 事件监听
+        dirCnyBtn.addEventListener('click', () => setDirection('cny2usd'));
+        dirUsdBtn.addEventListener('click', () => setDirection('usd2cny'));
+
+        costInput.addEventListener('input', refreshAll);
+        costInput.addEventListener('change', refreshAll);
+        profitInput.addEventListener('input', refreshAll);
+        profitInput.addEventListener('change', refreshAll);
+
+        // 重置按钮 (恢复默认值: 方向cny2usd, 成本128, 利润35)
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            setDirection('cny2usd');
+            costInput.value = '128.00';
+            profitInput.value = '35.0';
+            // 汇率不重置，保留当前设定
+            refreshAll();
+        });
+
+        // 低成本示例 (59元人民币 或 59美元 取决于方向)
+        document.getElementById('exampleLow').addEventListener('click', function() {
+            costInput.value = '59.00';
+            refreshAll();
+        });
+
+        // 高成本示例 (399)
+        document.getElementById('exampleHigh').addEventListener('click', function() {
+            costInput.value = '399.00';
+            refreshAll();
+        });
+
+        // 汇率双击编辑
+        exchangeRateSpan.addEventListener('dblclick', function() {
+            let newRate = prompt('修改美元兑人民币汇率 (当前 ' + exchangeRate + ')', exchangeRate);
+            if (newRate !== null) {
+                let rate = parseFloat(newRate);
+                if (!isNaN(rate) && rate > 0) {
+                    exchangeRate = rate;
+                    exchangeRateHidden.value = rate;
+                    exchangeRateSpan.innerText = `1 USD = ${exchangeRate.toFixed(2)} ¥`;
+                    refreshAll();
+                } else {
+                    alert('请输入有效的正数汇率');
+                }
+            }
+        });
+
+        // 失焦校验
+        [costInput, profitInput].forEach(inp => {
+            inp.addEventListener('blur', function() {
+                let val = parseFloat(this.value);
+                if (isNaN(val) || val < 0) {
+                    this.value = 0;
+                }
+                if (this === profitInput) {
+                    if (val > 100) this.value = 100;
+                }
+                refreshAll();
+            });
+        });
+
+        // 初始化显示
+        exchangeRateSpan.innerText = `1 USD = ${exchangeRate.toFixed(2)} ¥`;
+        refreshAll();
+    })();
+</script>
+</body>
+</html>
